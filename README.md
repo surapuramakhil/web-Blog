@@ -1,3 +1,4 @@
+
 # web-Blog
 Blog web application
 this is a Web application made using Java Script.
@@ -14,3 +15,4 @@ change modification in config in server.js according to your database credential
 run the server by using `node server.js`
 
 you can access your web- application by opening browser using url `http://localhost:8080`
+
