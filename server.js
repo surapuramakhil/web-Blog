@@ -7,11 +7,11 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var support = require('./support.js');
 var config = {
-	user : 'postgres',
+	user : 'Blog',
 	database : 'Blog',
 	host: 'localhost',
-  port: '5432',
-  password : 'postgres'
+  	port: '5432',
+  	password : process.env.DB_PASSWORD,
 };
 
 var app = express();
@@ -176,12 +176,28 @@ app.get('/ui/article.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'article.js'));
 });
 
-app.get('/ui/style.css', function (req, res) {
+app.get('/style.css', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'style.css'));
 });
 
-app.get('/ui/madi.png', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
+app.get('/css/bootstrap.min.css', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui/css', 'bootstrap.min.css'));
+});
+
+app.get('/js/bootstrap.min.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui/js', 'bootstrap.min.js'));
+});
+
+app.get('/jquery.min.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'jquery.min.js'));
+});
+
+app.get('/sura.jpg', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'sura.jpg'));
+});
+
+app.get('/sura.jpg', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'sura.jpg'));
 });
 
 var port = 8080; // Use 8080 for local development because you might already have apache running on 80

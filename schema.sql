@@ -1,3 +1,4 @@
+CREATE DATABASE "Blog";
 
 CREATE SEQUENCE public.article_id_seq
   INCREMENT 1
