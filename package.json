@@ -1,5 +1,5 @@
 {
-  "name": "Web Blog",
+  "name": "web-blog",
   "version": "0.1.0",
   "description": "IMAD 2016 course app",
   "main": "server.js",
