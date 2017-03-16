@@ -7,60 +7,22 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var support = require('./support.js');
 var config = {
-	user : 'Blog',
+	user : 'postgres',
 	database : 'Blog',
 	host: 'localhost',
   	port: '5432',
-  	password : process.env.DB_PASSWORD,
+  	password : 'postgres',
 };
 
 var app = express();
 app.use(morgan('combined'));
-
 app.use(bodyParser.json());
-
 var pool = new Pool(config);
 
 app.use(session({
     secret: 'someRandomSecretValue',
     cookie: { maxAge: 1000 * 60 * 60 * 24 * 30}
 }));
-
-function createTemplate(data){
-    var title = data.title;
-	var date = data.date;
-	var heading = data.heading;
-	var content = data.content;
-	 var htmlTemplate = `
-    <html>
-      <head>
-          <title>
-              ${title}
-          </title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link href="/ui/style.css" rel="stylesheet" />
-      </head> 
-      <body>
-          <div class="container">
-              <div>
-                  <a href="/">Home</a>
-              </div>
-              <hr/>
-              <h3>
-                  <centre>${heading}</centre>
-              </h3>
-              <div>
-                  ${date.toDateString()}
-              </div>
-              <div>
-                ${content}
-              </div>
-          </div>
-      </body>
-    </html>
-    `;
-    return htmlTemplate;
-}
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
@@ -143,13 +105,17 @@ app.get('/logout', function (req, res) {
 app.get('/blog', function (req, res) {
    // make a select request
    // return a response with the results
-   pool.query('SELECT * FROM article ORDER BY date DESC', function (err, result) {
+   pool.query('SELECT * FROM article,"user" where article.user_id = "user".id ORDER BY date DESC', function (err, result) {
       if (err) {
           res.status(500).send(err.toString());
       } else {
+          for (var i=0; i< result.rows.length; i++) {
+            result.rows[i].date = result.rows[i].date.toDateString();                    
+          }
           res.send(JSON.stringify(result.rows));
       }
    });
+   
 });
 
 app.get('/blog/:articleName', function (req, res) {
@@ -162,17 +128,21 @@ app.get('/blog/:articleName', function (req, res) {
             res.status(404).send('Article not found');
         } else {
             var articleData = result.rows[0];
-            res.send(createTemplate(articleData));
+            res.send(support.createTemplate(articleData));
         }
     }
   });
 });
 
-app.get('/ui/main.js', function (req, res) {
+app.get('/main.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'main.js'));
 });
+app.get('/loadarticles.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'loadarticles.js'));
+});
 
-app.get('/ui/article.js', function (req, res) {
+
+app.get('/article.js', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'article.js'));
 });
 
@@ -196,8 +166,16 @@ app.get('/sura.jpg', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'sura.jpg'));
 });
 
-app.get('/sura.jpg', function (req, res) {
-  res.sendFile(path.join(__dirname, 'ui', 'sura.jpg'));
+app.get('/fonts/glyphicons-halflings-regular.woff2', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui/fonts', 'glyphicons-halflings-regular.woff2'));
+});
+
+app.get('/fonts/glyphicons-halflings-regular.woff', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui/fonts', 'glyphicons-halflings-regular.woff'));
+});
+
+app.get('/fonts/glyphicons-halflings-regular.ttf', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui/fonts', 'glyphicons-halflings-regular.ttf'));
 });
 
 var port = 8080; // Use 8080 for local development because you might already have apache running on 80
