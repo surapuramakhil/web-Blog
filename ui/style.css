@@ -1,0 +1,26 @@
+.navbar-inverse {
+    background-color: #013767;
+    border-color: #080808;
+}
+body { 
+     background: url(./sura.jpg) no-repeat center center fixed; 
+     -webkit-background-size: cover;
+     -moz-background-size: cover;
+     -o-background-size: cover;
+     background-size: cover;
+   }
+
+.column {
+    float: left;
+    padding: 15px;
+}
+.menu {
+    width: 35%;
+}
+.content {
+    width: 65%;
+}
+.sidebar {
+	position: fixed;
+	left: 10%;
+}
